@@ -46,7 +46,6 @@ travel-booking-system/
 │   │   ├── App.jsx
 │   │   └── index.js
 │   └── package.json
-└── README.md
 ```
 
 ## Tech Stack
