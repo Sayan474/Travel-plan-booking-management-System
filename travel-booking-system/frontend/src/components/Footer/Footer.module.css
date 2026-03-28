@@ -1,0 +1,6 @@
+.footer {
+  margin-top: 40px;
+  padding: 24px 20px 34px;
+  text-align: center;
+  color: var(--text-muted);
+}

@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+:root {
+  --primary: #6c63ff;
+  --primary-dark: #4b44cc;
+  --accent: #ff6584;
+  --bg-dark: #0d0d1a;
+  --bg-card: #16163a;
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  --text-primary: #f0f0ff;
+  --text-muted: #8888aa;
+  --border: rgba(108, 99, 255, 0.25);
+  --success: #22d3a5;
+  --warning: #ffb347;
+  --error: #ff4d6d;
+  --radius-card: 16px;
+  --radius-input: 12px;
+  --radius-pill: 50px;
+  --shadow: 0 8px 32px rgba(108, 99, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: radial-gradient(circle at 20% 20%, #1d1d4d 0%, var(--bg-dark) 45%),
+    radial-gradient(circle at 80% 10%, #252566 0%, transparent 35%);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 96px 20px 40px;
+  animation: fadeIn 0.5s ease;
+}
+
+.card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 22px;
+  font-weight: 600;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+  color: #fff;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(255, 101, 132, 0.25);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-input);
+  padding: 11px 12px;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.section-title {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

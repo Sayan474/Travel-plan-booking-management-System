@@ -1,0 +1,82 @@
+.stats {
+  margin-top: 20px;
+  padding: 18px;
+  display: flex;
+  justify-content: space-around;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.destinations {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.destinationCard {
+  overflow: hidden;
+}
+
+.destinationCard img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.destinationCard div {
+  padding: 12px;
+}
+
+.destinationCard p {
+  color: var(--accent);
+  margin-top: 4px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.steps > div {
+  padding: 16px;
+}
+
+.steps svg {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.steps p {
+  margin-top: 6px;
+  color: var(--text-muted);
+}
+
+.aiCta {
+  margin-top: 20px;
+  padding: 20px;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(120deg, rgba(108, 99, 255, 0.22), rgba(255, 101, 132, 0.2));
+}
+
+.testimonial {
+  margin-top: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+.testimonial p {
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 900px) {
+  .destinations,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}

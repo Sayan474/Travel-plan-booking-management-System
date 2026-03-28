@@ -1,0 +1,53 @@
+.hero {
+  min-height: 82vh;
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #2f2f87, #14143a, #27164f);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 101, 132, 0.32), transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(108, 99, 255, 0.35), transparent 35%);
+}
+
+.content {
+  max-width: 760px;
+  z-index: 2;
+  padding: 30px;
+}
+
+.content h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  margin-bottom: 14px;
+}
+
+.content p {
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  font-size: 1.1rem;
+}
+
+.plane {
+  position: absolute;
+  right: 8%;
+  top: 20%;
+  font-size: 3rem;
+  z-index: 2;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(8deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(15deg);
+  }
+}

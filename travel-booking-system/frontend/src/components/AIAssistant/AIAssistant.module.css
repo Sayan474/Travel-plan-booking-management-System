@@ -1,0 +1,50 @@
+.panel {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 560px;
+}
+
+.messages {
+  padding: 14px;
+  overflow: auto;
+}
+
+.msg {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  max-width: 88%;
+}
+
+.user {
+  margin-left: auto;
+  background: rgba(108, 99, 255, 0.35);
+}
+
+.ai {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.msg span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.msg p {
+  margin: 6px 0;
+}
+
+.msg small {
+  color: var(--text-muted);
+}
+
+.typing {
+  color: var(--text-muted);
+}
+
+.inputBar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  padding: 12px;
+}

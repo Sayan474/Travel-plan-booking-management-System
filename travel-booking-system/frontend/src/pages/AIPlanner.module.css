@@ -1,0 +1,92 @@
+.split {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 16px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.itineraryPanel {
+  padding: 14px;
+}
+
+.itineraryPanel h2 {
+  margin-bottom: 10px;
+}
+
+.timeline {
+  max-height: 260px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+}
+
+.dayCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.dayCard p,
+.dayCard li {
+  color: var(--text-muted);
+}
+
+.suggestions {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.suggestions > div {
+  padding: 10px;
+}
+
+.suggestions pre {
+  overflow: auto;
+  max-height: 120px;
+}
+
+.budget {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.budget > div {
+  margin-top: 8px;
+}
+
+.barTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.error {
+  color: var(--error);
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1000px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}

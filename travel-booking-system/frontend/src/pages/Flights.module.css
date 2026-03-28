@@ -1,0 +1,59 @@
+.searchTop {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.layout {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 14px;
+}
+
+.filters {
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  height: fit-content;
+}
+
+.sortRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.results {
+  display: grid;
+  gap: 10px;
+}
+
+.flightCard {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+}
+
+.flightCard p {
+  color: var(--text-muted);
+}
+
+.badge {
+  background: rgba(34, 211, 165, 0.2);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .searchTop,
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .flightCard {
+    grid-template-columns: 1fr;
+  }
+}
