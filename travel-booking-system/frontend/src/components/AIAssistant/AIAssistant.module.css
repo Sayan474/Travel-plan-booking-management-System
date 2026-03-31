@@ -5,14 +5,14 @@
 }
 
 .messages {
-  padding: 14px;
+  padding: 16px;
   overflow: auto;
 }
 
 .msg {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 14px;
   max-width: 88%;
 }
 
@@ -28,14 +28,31 @@
 .msg span {
   font-size: 0.8rem;
   color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
-.msg p {
-  margin: 6px 0;
+.content {
+  margin: 8px 0;
+  display: grid;
+  gap: 6px;
+}
+
+.content p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--text-primary);
+  font-size: 0.98rem;
+  white-space: pre-wrap;
+}
+
+.bullet {
+  padding-left: 2px;
 }
 
 .msg small {
   color: var(--text-muted);
+  font-size: 0.75rem;
 }
 
 .typing {

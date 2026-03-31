@@ -12,6 +12,13 @@ const quickPrompts = [
   "7-day Europe itinerary",
 ];
 
+const asArray = (value) => (Array.isArray(value) ? value : []);
+
+const money = (value) => {
+  const amount = Number(value || 0);
+  return Number.isFinite(amount) ? `$${amount.toFixed(2)}` : "$0.00";
+};
+
 export default function AIPlanner() {
   const [sessionId] = useState(`session-${Date.now()}`);
   const [messages, setMessages] = useState([
@@ -154,11 +161,40 @@ export default function AIPlanner() {
               <div className={styles.suggestions}>
                 <div className="card">
                   <h4><FaPlaneDeparture /> Suggested Flights</h4>
-                  <pre>{JSON.stringify(plan.suggested_flights, null, 2)}</pre>
+                  {asArray(plan.suggested_flights).length ? (
+                    <ul className={styles.suggestList}>
+                      {asArray(plan.suggested_flights).map((flight, index) => (
+                        <li key={`${flight.airline || "flight"}-${index}`} className={styles.suggestItem}>
+                          <strong>{flight.airline || "Airline"}</strong>
+                          <span>{flight.origin || "Origin"} to {flight.destination || "Destination"}</span>
+                          <span>
+                            {flight.departure_time || flight.departure || "Any time"}
+                            {flight.arrival_time ? ` -> ${flight.arrival_time}` : ""}
+                          </span>
+                          <small>{money(flight.price)}</small>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={styles.emptyText}>No flight suggestions available yet.</p>
+                  )}
                 </div>
                 <div className="card">
                   <h4><FaHotel /> Suggested Hotels</h4>
-                  <pre>{JSON.stringify(plan.suggested_hotels, null, 2)}</pre>
+                  {asArray(plan.suggested_hotels).length ? (
+                    <ul className={styles.suggestList}>
+                      {asArray(plan.suggested_hotels).map((hotel, index) => (
+                        <li key={`${hotel.name || "hotel"}-${index}`} className={styles.suggestItem}>
+                          <strong>{hotel.name || hotel.hotel_name || "Hotel"}</strong>
+                          <span>{hotel.location || "Destination area"}</span>
+                          {hotel.rating ? <span>Rating: {hotel.rating}</span> : null}
+                          <small>{money(hotel.price_per_night || hotel.price)}</small>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={styles.emptyText}>No hotel suggestions available yet.</p>
+                  )}
                 </div>
               </div>
 

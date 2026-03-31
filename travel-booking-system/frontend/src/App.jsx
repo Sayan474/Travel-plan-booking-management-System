@@ -9,7 +9,6 @@ import Booking from "./pages/Booking";
 import Profile from "./pages/Profile";
 import AIPlanner from "./pages/AIPlanner";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import PrivateRoute from "./utils/PrivateRoute";
 
 export default function App() {
@@ -53,7 +52,7 @@ export default function App() {
           }
         />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Login initialMode="signup" />} />
       </Routes>
     </>
   );

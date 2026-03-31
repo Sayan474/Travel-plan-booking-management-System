@@ -18,9 +18,12 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    name: str | None = None
+    name: str | None = Field(default=None, min_length=2, max_length=120)
+    email: EmailStr | None = None
     phone: str | None = None
     avatar_url: str | None = None
+    current_password: str | None = None
+    new_password: str | None = Field(default=None, min_length=8)
 
 
 class UserOut(BaseModel):
