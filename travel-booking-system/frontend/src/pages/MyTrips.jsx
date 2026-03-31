@@ -5,6 +5,7 @@ import Dashboard from "../components/Dashboard/Dashboard";
 import TripCard from "../components/TripCard/TripCard";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { resolveAvatarUrl } from "../utils/avatar";
 import styles from "./MyTrips.module.css";
 
 export default function MyTrips() {
@@ -92,7 +93,7 @@ export default function MyTrips() {
           <h1 className="section-title">Welcome back, {user?.name || "Traveler"}</h1>
           <p>Track, organize, and book every journey.</p>
         </div>
-        <img src={user?.avatar_url || "https://i.pravatar.cc/120"} alt="avatar" className={styles.avatar} />
+        <img src={resolveAvatarUrl(user?.avatar_url) || "https://i.pravatar.cc/120"} alt="avatar" className={styles.avatar} />
       </header>
 
       <Dashboard stats={stats} />

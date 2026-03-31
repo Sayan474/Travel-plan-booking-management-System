@@ -16,6 +16,35 @@
   color: var(--success);
 }
 
+.error {
+  color: var(--error);
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.avatarRow p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.avatarPreview {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.uploadRow {
+  display: grid;
+  gap: 8px;
+}
+
 .history table {
   width: 100%;
   border-collapse: collapse;

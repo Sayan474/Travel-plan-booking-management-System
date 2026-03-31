@@ -2,14 +2,19 @@ import { useEffect, useState } from "react";
 
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { resolveAvatarUrl } from "../utils/avatar";
 import styles from "./Profile.module.css";
 
 export default function Profile() {
   const { user, refreshUser } = useAuth();
   const [profile, setProfile] = useState({ name: "", email: "", phone: "", avatar_url: "" });
+  const [security, setSecurity] = useState({ current_password: "", new_password: "", confirm_password: "" });
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [preferences, setPreferences] = useState({ currency: "USD", language: "English", seat: "Window" });
   const [history, setHistory] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   useEffect(() => {
     if (user) {
@@ -35,37 +40,128 @@ export default function Profile() {
   const save = async (event) => {
     event.preventDefault();
     if (!profile.name || !profile.email) {
-      setMessage("Name and email are required");
+      setMessage({ type: "error", text: "Name and email are required" });
       return;
     }
+
+    const changingPassword = security.current_password || security.new_password || security.confirm_password;
+    if (changingPassword) {
+      if (!security.current_password || !security.new_password) {
+        setMessage({ type: "error", text: "Provide current password and new password" });
+        return;
+      }
+      if (security.new_password.length < 8) {
+        setMessage({ type: "error", text: "New password must be at least 8 characters" });
+        return;
+      }
+      if (security.new_password !== security.confirm_password) {
+        setMessage({ type: "error", text: "New password and confirm password do not match" });
+        return;
+      }
+    }
+
     try {
-      await api.put("/api/auth/me", {
+      const payload = {
         name: profile.name,
+        email: profile.email,
         phone: profile.phone,
         avatar_url: profile.avatar_url,
-      });
+      };
+      if (changingPassword) {
+        payload.current_password = security.current_password;
+        payload.new_password = security.new_password;
+      }
+
+      await api.put("/api/auth/me", payload);
       await refreshUser();
-      setMessage("Profile updated successfully");
+      setSecurity({ current_password: "", new_password: "", confirm_password: "" });
+      setMessage({ type: "success", text: "Profile updated successfully" });
     } catch (err) {
-      setMessage(err.response?.data?.detail || "Failed to update profile");
+      setMessage({ type: "error", text: err.response?.data?.detail || "Failed to update profile" });
+    }
+  };
+
+  const selectAvatar = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+
+  const uploadAvatar = async () => {
+    if (!avatarFile) {
+      setMessage({ type: "error", text: "Select an image file first" });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", avatarFile);
+
+    try {
+      setUploadingAvatar(true);
+      const { data } = await api.post("/api/auth/me/avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setProfile((prev) => ({ ...prev, avatar_url: data.avatar_url || "" }));
+      setAvatarFile(null);
+      setAvatarPreview("");
+      await refreshUser();
+      setMessage({ type: "success", text: "Profile picture updated" });
+    } catch (err) {
+      setMessage({ type: "error", text: err.response?.data?.detail || "Failed to upload profile picture" });
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
   return (
     <main className="page">
       <h1 className="section-title">Profile</h1>
-      {message && <p className={styles.message}>{message}</p>}
+      {message.text && <p className={`${styles.message} ${message.type === "error" ? styles.error : ""}`}>{message.text}</p>}
       <div className={styles.layout}>
         <form className={`${styles.form} card`} onSubmit={save}>
           <h3>Personal Info</h3>
-          <input className="input" placeholder="Avatar URL" value={profile.avatar_url} onChange={(e) => setProfile({ ...profile, avatar_url: e.target.value })} />
+          <div className={styles.avatarRow}>
+            <img
+              src={avatarPreview || resolveAvatarUrl(profile.avatar_url) || "https://i.pravatar.cc/160"}
+              alt="Profile avatar"
+              className={styles.avatarPreview}
+            />
+            <p>Click your profile picture in the top-right nav to open this editor anytime.</p>
+          </div>
+          <div className={styles.uploadRow}>
+            <input className="input" type="file" accept="image/*" onChange={selectAvatar} />
+            <button className="btn" type="button" onClick={uploadAvatar} disabled={uploadingAvatar}>
+              {uploadingAvatar ? "Uploading..." : "Upload New Photo"}
+            </button>
+          </div>
           <input className="input" placeholder="Name" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
-          <input className="input" placeholder="Email" value={profile.email} disabled />
+          <input className="input" placeholder="Email" type="email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
           <input className="input" placeholder="Phone" value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} />
 
           <h3>Password</h3>
-          <input className="input" placeholder="Current Password" type="password" />
-          <input className="input" placeholder="New Password" type="password" />
+          <input
+            className="input"
+            placeholder="Current Password"
+            type="password"
+            value={security.current_password}
+            onChange={(e) => setSecurity({ ...security, current_password: e.target.value })}
+          />
+          <input
+            className="input"
+            placeholder="New Password"
+            type="password"
+            value={security.new_password}
+            onChange={(e) => setSecurity({ ...security, new_password: e.target.value })}
+          />
+          <input
+            className="input"
+            placeholder="Confirm New Password"
+            type="password"
+            value={security.confirm_password}
+            onChange={(e) => setSecurity({ ...security, confirm_password: e.target.value })}
+          />
 
           <h3>Preferences</h3>
           <select className="select" value={preferences.currency} onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}>

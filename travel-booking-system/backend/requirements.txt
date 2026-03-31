@@ -12,3 +12,4 @@ httpx
 openai
 cryptography
 email-validator
+python-multipart

@@ -35,6 +35,7 @@ travel-booking-system/backend/.venv/
 *.sqlite
 travel.db
 travel-booking-system/backend/travel.db
+travel-booking-system/backend/uploads/
 
 # Frontend build artifacts
 node_modules/
