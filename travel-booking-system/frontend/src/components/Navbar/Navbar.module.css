@@ -60,6 +60,23 @@
   gap: 8px;
 }
 
+.logoutBtn {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  height: 36px;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.logoutBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
 .iconBtn,
 .mobileBtn,
 .closeBtn {
@@ -221,6 +238,11 @@
 @media (max-width: 900px) {
   .links {
     display: none;
+  }
+
+  .logoutBtn {
+    padding: 0 10px;
+    font-size: 13px;
   }
 
   .mobileBtn,

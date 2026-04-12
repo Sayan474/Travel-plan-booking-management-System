@@ -4,6 +4,49 @@ import styles from "./BookingForm.module.css";
 
 const STEPS = ["Review", "Passengers", "Add-ons", "Payment"];
 
+function getCleanSelectionRows(selection) {
+  if (!selection || typeof selection !== "object") {
+    return [{ label: "Selection", value: "No selection available" }];
+  }
+
+  const rows = [];
+  const preferredFields = [
+    ["Hotel Name", selection.hotel_name],
+    ["Flight", selection.flight_name || selection.flight_number],
+    ["Airline", selection.airline],
+    ["From", selection.origin || selection.from],
+    ["To", selection.destination || selection.to],
+    ["Location", selection.location || selection.city],
+    ["Stars", selection.stars],
+    ["Price", selection.price || selection.price_per_night],
+  ];
+
+  preferredFields.forEach(([label, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      rows.push({ label, value: String(value) });
+    }
+  });
+
+  if (Array.isArray(selection.amenities) && selection.amenities.length > 0) {
+    rows.push({ label: "Amenities", value: selection.amenities.join(" ") });
+  }
+
+  if (rows.length > 0) {
+    return rows;
+  }
+
+  Object.entries(selection).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (typeof value === "object") return;
+    const label = key
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+    rows.push({ label, value: String(value) });
+  });
+
+  return rows.length > 0 ? rows : [{ label: "Selection", value: "Details available" }];
+}
+
 export default function BookingForm({ selection, onConfirm }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
@@ -24,6 +67,8 @@ export default function BookingForm({ selection, onConfirm }) {
     if (step === 3) return form.card_number.length >= 12 && form.cvv.length >= 3;
     return true;
   }, [step, form]);
+
+  const reviewRows = useMemo(() => getCleanSelectionRows(selection), [selection]);
 
   const submit = () => {
     onConfirm({
@@ -57,7 +102,14 @@ export default function BookingForm({ selection, onConfirm }) {
       {step === 0 && (
         <div className={styles.panel}>
           <h3>Review Selection</h3>
-          <pre>{JSON.stringify(selection, null, 2)}</pre>
+          <div className={styles.reviewList}>
+            {reviewRows.map((row) => (
+              <div key={row.label} className={styles.reviewItem}>
+                <span className={styles.reviewLabel}>{row.label}</span>
+                <span className={styles.reviewValue}>{row.value}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

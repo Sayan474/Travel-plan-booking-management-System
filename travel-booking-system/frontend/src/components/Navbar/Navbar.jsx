@@ -72,6 +72,11 @@ export default function Navbar() {
       </nav>
 
       <div className={styles.right}>
+        {user && (
+          <button className={styles.logoutBtn} onClick={logout} aria-label="Log out">
+            Logout
+          </button>
+        )}
         <div className={styles.notifWrap} ref={notifRef}>
           <button
             className={styles.iconBtn}

@@ -6,7 +6,7 @@ import { resolveAvatarUrl } from "../utils/avatar";
 import styles from "./Profile.module.css";
 
 export default function Profile() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
   const [profile, setProfile] = useState({ name: "", email: "", phone: "", avatar_url: "" });
   const [security, setSecurity] = useState({ current_password: "", new_password: "", confirm_password: "" });
   const [avatarFile, setAvatarFile] = useState(null);
@@ -179,7 +179,10 @@ export default function Profile() {
             <option>Aisle</option>
           </select>
 
-          <button className="btn btn-primary" type="submit">Save Changes</button>
+          <div className={styles.actions}>
+            <button className="btn btn-primary" type="submit">Save Changes</button>
+            <button className={`${styles.logoutBtn} btn`} type="button" onClick={logout}>Log Out</button>
+          </div>
         </form>
 
         <section className={`${styles.history} card`}>

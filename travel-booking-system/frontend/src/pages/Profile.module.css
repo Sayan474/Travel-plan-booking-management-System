@@ -45,6 +45,22 @@
   gap: 8px;
 }
 
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.logoutBtn {
+  background: rgba(255, 77, 109, 0.14);
+  color: #ffd8df;
+  border: 1px solid rgba(255, 77, 109, 0.4);
+}
+
+.logoutBtn:hover {
+  background: rgba(255, 77, 109, 0.22);
+}
+
 .history table {
   width: 100%;
   border-collapse: collapse;
@@ -64,5 +80,9 @@
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
   }
 }

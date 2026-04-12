@@ -10,10 +10,14 @@ load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "mysql+pymysql://root:password@localhost:3306/travel_booking_db",
+    f"sqlite:///{(Path(__file__).resolve().parent / 'travel_booking.db').as_posix()}",
 )
 
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+engine_kwargs = {"pool_pre_ping": True}
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

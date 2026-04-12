@@ -78,13 +78,15 @@ def get_current_user(
 
 @router.post("/register", response_model=schemas.UserOut, status_code=status.HTTP_201_CREATED)
 def register(payload: schemas.UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(models.User).filter(models.User.email == payload.email).first()
+    normalized_email = payload.email.strip().lower()
+
+    existing = db.query(models.User).filter(models.User.email == normalized_email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     user = models.User(
         name=payload.name,
-        email=payload.email,
+        email=normalized_email,
         password_hash=get_password_hash(payload.password),
         phone=payload.phone,
         role="user",
@@ -97,7 +99,8 @@ def register(payload: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=schemas.Token)
 def login(payload: schemas.LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    normalized_email = payload.email.strip().lower()
+    user = db.query(models.User).filter(models.User.email == normalized_email).first()
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
@@ -155,6 +158,8 @@ def update_me(
     updates = payload.model_dump(exclude_unset=True)
 
     new_email = updates.get("email")
+    if new_email:
+        new_email = new_email.strip().lower()
     if new_email and new_email != current_user.email:
         existing = db.query(models.User).filter(models.User.email == new_email).first()
         if existing:

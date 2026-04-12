@@ -28,14 +28,22 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (payload) => {
-    const { data } = await api.post("/api/auth/login", payload);
+    const normalizedPayload = {
+      ...payload,
+      email: payload.email.trim().toLowerCase(),
+    };
+    const { data } = await api.post("/api/auth/login", normalizedPayload);
     localStorage.setItem("token", data.access_token);
     await fetchMe();
   };
 
   const register = async (payload) => {
-    await api.post("/api/auth/register", payload);
-    await login({ email: payload.email, password: payload.password });
+    const normalizedPayload = {
+      ...payload,
+      email: payload.email.trim().toLowerCase(),
+    };
+    await api.post("/api/auth/register", normalizedPayload);
+    await login({ email: normalizedPayload.email, password: normalizedPayload.password });
   };
 
   const logout = () => {

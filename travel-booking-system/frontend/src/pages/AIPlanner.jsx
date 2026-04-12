@@ -19,6 +19,16 @@ const money = (value) => {
   return Number.isFinite(amount) ? `$${amount.toFixed(2)}` : "$0.00";
 };
 
+const formatActivity = (activity) => {
+  if (typeof activity === "string") return activity;
+  if (!activity || typeof activity !== "object") return "Planned activity";
+
+  const name = activity.name || activity.title || "Planned activity";
+  const time = activity.time ? ` (${activity.time})` : "";
+  const description = activity.description ? ` - ${activity.description}` : "";
+  return `${name}${time}${description}`;
+};
+
 export default function AIPlanner() {
   const [sessionId] = useState(`session-${Date.now()}`);
   const [messages, setMessages] = useState([
@@ -151,7 +161,7 @@ export default function AIPlanner() {
                     <p>{day.title}</p>
                     <ul>
                       {(day.activities || []).map((activity, i) => (
-                        <li key={i}>{activity}</li>
+                        <li key={i}>{formatActivity(activity)}</li>
                       ))}
                     </ul>
                   </div>
