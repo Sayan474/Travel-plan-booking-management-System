@@ -5,15 +5,22 @@ import { useBooking } from "../context/BookingContext";
 import styles from "./Flights.module.css";
 
 const sampleFlights = [
-  { id: 1, airline: "SkyWays", departure: "07:40", arrival: "12:05", duration: "4h 25m", stops: 0, price: 320, badge: "Best Value" },
-  { id: 2, airline: "AeroLink", departure: "10:25", arrival: "14:30", duration: "4h 05m", stops: 1, price: 360, badge: "Fastest" },
-  { id: 3, airline: "JetCloud", departure: "16:10", arrival: "21:00", duration: "4h 50m", stops: 1, price: 290, badge: "Best Value" },
+  { id: 1, airline: "SkyWays", departure: "07:40", arrival: "12:05", duration: "4h 25m", stops: 0, price: 8320, badge: "Best Value" },
+  { id: 2, airline: "AeroLink", departure: "10:25", arrival: "14:30", duration: "4h 05m", stops: 1, price: 9680, badge: "Fastest" },
+  { id: 3, airline: "JetCloud", departure: "16:10", arrival: "21:00", duration: "4h 50m", stops: 1, price: 7490, badge: "Best Value" },
 ];
+
+const formatINR = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
 
 export default function Flights() {
   const navigate = useNavigate();
   const { searchData, setSelection } = useBooking();
-  const [filters, setFilters] = useState({ maxPrice: 500, stops: "all", airline: "all", dep: "any" });
+  const [filters, setFilters] = useState({ maxPrice: 15000, stops: "all", airline: "all", dep: "any" });
   const [sortBy, setSortBy] = useState("price");
 
   const flights = useMemo(() => {
@@ -38,8 +45,8 @@ export default function Flights() {
       <div className={styles.layout}>
         <aside className={`${styles.filters} card`}>
           <h3>Filters</h3>
-          <label>Max Price ${filters.maxPrice}</label>
-          <input type="range" min="100" max="700" value={filters.maxPrice} onChange={(e) => setFilters({ ...filters, maxPrice: Number(e.target.value) })} />
+          <label>Max Price {formatINR(filters.maxPrice)}</label>
+          <input type="range" min="5000" max="15000" value={filters.maxPrice} onChange={(e) => setFilters({ ...filters, maxPrice: Number(e.target.value) })} />
           <label>Stops</label>
           <select className="select" value={filters.stops} onChange={(e) => setFilters({ ...filters, stops: e.target.value })}>
             <option value="all">All</option>
@@ -73,7 +80,7 @@ export default function Flights() {
                   <p>{f.duration} • {f.stops} stop(s)</p>
                 </div>
                 <span className={styles.badge}>{f.badge}</span>
-                <strong>${f.price}</strong>
+                <strong>{formatINR(f.price)}</strong>
                 <button
                   className="btn btn-primary"
                   onClick={() => {

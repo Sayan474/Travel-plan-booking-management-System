@@ -35,7 +35,7 @@ export default function Booking() {
       await api.post("/api/payments/process", {
         trip_id: trip.id,
         amount: payload.payment.amount,
-        currency: "USD",
+        currency: "INR",
         method: "card",
       });
 

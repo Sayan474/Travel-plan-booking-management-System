@@ -4,6 +4,22 @@ import styles from "./BookingForm.module.css";
 
 const STEPS = ["Review", "Passengers", "Add-ons", "Payment"];
 
+const formatINR = (value) => {
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return String(value);
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
+const prettifyValue = (label, value) => {
+  if (label === "Price") return formatINR(value);
+  if (label === "Amenities") return String(value).split(" ").filter(Boolean).join(", ");
+  return String(value).replace(/\s+/g, " ").trim();
+};
+
 function getCleanSelectionRows(selection) {
   if (!selection || typeof selection !== "object") {
     return [{ label: "Selection", value: "No selection available" }];
@@ -23,12 +39,12 @@ function getCleanSelectionRows(selection) {
 
   preferredFields.forEach(([label, value]) => {
     if (value !== undefined && value !== null && String(value).trim() !== "") {
-      rows.push({ label, value: String(value) });
+      rows.push({ label, value: prettifyValue(label, value) });
     }
   });
 
   if (Array.isArray(selection.amenities) && selection.amenities.length > 0) {
-    rows.push({ label: "Amenities", value: selection.amenities.join(" ") });
+    rows.push({ label: "Amenities", value: selection.amenities.join(", ") });
   }
 
   if (rows.length > 0) {
@@ -64,7 +80,9 @@ export default function BookingForm({ selection, onConfirm }) {
 
   const canContinue = useMemo(() => {
     if (step === 1) return form.full_name && form.passport_number && form.dob;
-    if (step === 3) return form.card_number.length >= 12 && form.cvv.length >= 3;
+    if (step === 3) {
+      return form.card_number.length >= 12 && form.cvv.length >= 3 && form.cvv.length <= 4 && /^\d{2}\/\d{4}$/.test(form.expiry);
+    }
     return true;
   }, [step, form]);
 
@@ -105,7 +123,7 @@ export default function BookingForm({ selection, onConfirm }) {
           <div className={styles.reviewList}>
             {reviewRows.map((row) => (
               <div key={row.label} className={styles.reviewItem}>
-                <span className={styles.reviewLabel}>{row.label}</span>
+                <span className={styles.reviewLabel}>{row.label}:</span>
                 <span className={styles.reviewValue}>{row.value}</span>
               </div>
             ))}
@@ -117,7 +135,18 @@ export default function BookingForm({ selection, onConfirm }) {
         <div className={styles.grid2}>
           <input className="input" placeholder="Full Name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
           <input className="input" placeholder="Passport Number" value={form.passport_number} onChange={(e) => setForm({ ...form, passport_number: e.target.value })} />
-          <input className="input" type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} />
+          <div className={styles.fieldWithHint}>
+            <input
+              className="input"
+              type="date"
+              placeholder="Date of Birth"
+              aria-label="Date of Birth (DD/MM/YYYY)"
+              title="Date of Birth (DD/MM/YYYY)"
+              value={form.dob}
+              onChange={(e) => setForm({ ...form, dob: e.target.value })}
+            />
+            <small className={styles.fieldHint}>Date of Birth (DD/MM/YYYY)</small>
+          </div>
           <input className="input" placeholder="Nationality" value={form.nationality} onChange={(e) => setForm({ ...form, nationality: e.target.value })} />
         </div>
       )}
@@ -143,9 +172,36 @@ export default function BookingForm({ selection, onConfirm }) {
 
       {step === 3 && (
         <div className={styles.grid2}>
-          <input className="input" placeholder="Card Number" value={form.card_number} onChange={(e) => setForm({ ...form, card_number: e.target.value.replace(/\D/g, "") })} />
-          <input className="input" placeholder="MM/YY" value={form.expiry} onChange={(e) => setForm({ ...form, expiry: e.target.value })} />
-          <input className="input" placeholder="CVV" value={form.cvv} onChange={(e) => setForm({ ...form, cvv: e.target.value.replace(/\D/g, "") })} />
+          <input
+            className="input"
+            placeholder="Card Number"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={19}
+            value={form.card_number}
+            onChange={(e) => setForm({ ...form, card_number: e.target.value.replace(/\D/g, "").slice(0, 19) })}
+          />
+          <input
+            className="input"
+            placeholder="Expiry (MM/YYYY)"
+            inputMode="numeric"
+            maxLength={7}
+            value={form.expiry}
+            onChange={(e) => {
+              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 6);
+              const formatted = digitsOnly.length > 2 ? `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2)}` : digitsOnly;
+              setForm({ ...form, expiry: formatted });
+            }}
+          />
+          <input
+            className="input"
+            placeholder="CVV"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={4}
+            value={form.cvv}
+            onChange={(e) => setForm({ ...form, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })}
+          />
         </div>
       )}
 

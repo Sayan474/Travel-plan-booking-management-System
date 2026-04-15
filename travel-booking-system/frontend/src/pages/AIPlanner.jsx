@@ -8,7 +8,7 @@ import styles from "./AIPlanner.module.css";
 const quickPrompts = [
   "Plan a trip to Bali",
   "Find cheap flights to Paris",
-  "Best hotels in Tokyo under $100",
+  "Best hotels in Tokyo under ₹8,000",
   "7-day Europe itinerary",
 ];
 
@@ -16,7 +16,14 @@ const asArray = (value) => (Array.isArray(value) ? value : []);
 
 const money = (value) => {
   const amount = Number(value || 0);
-  return Number.isFinite(amount) ? `$${amount.toFixed(2)}` : "$0.00";
+  return Number.isFinite(amount)
+    ? new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+    : "₹0.00";
 };
 
 const formatActivity = (activity) => {
@@ -209,7 +216,7 @@ export default function AIPlanner() {
               </div>
 
               <div className={`${styles.budget} card`}>
-                <h4>Estimated Budget: ${Number(plan.estimated_cost || 0).toFixed(2)}</h4>
+                <h4>Estimated Budget: {money(plan.estimated_cost || 0)}</h4>
                 {budgetBars.map((item) => (
                   <div key={item.label}>
                     <span>{item.label}</span>

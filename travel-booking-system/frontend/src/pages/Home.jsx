@@ -9,12 +9,12 @@ import { useBooking } from "../context/BookingContext";
 import styles from "./Home.module.css";
 
 const featured = [
-  { city: "Bali", price: "$480", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800" },
-  { city: "Tokyo", price: "$610", img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800" },
-  { city: "Paris", price: "$540", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800" },
-  { city: "Dubai", price: "$430", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800" },
-  { city: "Rome", price: "$460", img: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=800" },
-  { city: "Santorini", price: "$520", img: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=800" },
+  { city: "Goa", price: "₹12,500", img: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=800" },
+  { city: "Jaipur", price: "₹9,200", img: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=800" },
+  { city: "Varanasi", price: "₹7,400", img: "https://images.unsplash.com/photo-1561361058-c24cecae35ca?q=80&w=800" },
+  { city: "Dubai", price: "₹35,700", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800" },
+  { city: "Manali", price: "₹10,800", img: "https://images.unsplash.com/photo-1597074866923-dc0589150358?q=80&w=800" },
+  { city: "Munnar", price: "₹8,600", img: "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=800" },
 ];
 
 const testimonials = [

@@ -5,6 +5,14 @@ import api from "../services/api";
 import { resolveAvatarUrl } from "../utils/avatar";
 import styles from "./Profile.module.css";
 
+const formatINR = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(value || 0));
+
 export default function Profile() {
   const { user, refreshUser, logout } = useAuth();
   const [profile, setProfile] = useState({ name: "", email: "", phone: "", avatar_url: "" });
@@ -12,7 +20,7 @@ export default function Profile() {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [preferences, setPreferences] = useState({ currency: "USD", language: "English", seat: "Window" });
+  const [preferences, setPreferences] = useState({ currency: "INR", language: "English", seat: "Window" });
   const [history, setHistory] = useState([]);
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -202,7 +210,7 @@ export default function Profile() {
                   <td>{item.title}</td>
                   <td>{item.destination}</td>
                   <td>{item.status}</td>
-                  <td>${Number(item.budget || 0).toFixed(2)}</td>
+                  <td>{formatINR(item.budget || 0)}</td>
                 </tr>
               ))}
             </tbody>

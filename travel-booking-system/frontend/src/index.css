@@ -91,6 +91,17 @@ textarea {
   padding: 11px 12px;
 }
 
+.select {
+  background: #1f214b;
+  color: #f0f0ff;
+  border-color: rgba(173, 179, 255, 0.45);
+}
+
+.select option {
+  background: #16163a;
+  color: #f0f0ff;
+}
+
 .input:focus,
 .select:focus,
 .textarea:focus {

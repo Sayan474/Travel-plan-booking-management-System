@@ -3,6 +3,7 @@ import { FaBars, FaBell, FaTimes, FaUserCircle } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
+import api from "../../services/api";
 import { resolveAvatarUrl } from "../../utils/avatar";
 import styles from "./Navbar.module.css";
 
@@ -19,17 +20,66 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const notifRef = useRef(null);
   const profileRef = useRef(null);
 
-  const notifications = useMemo(
-    () => [
-      { id: 1, title: "Trip reminder", body: "Your next journey starts in 2 days.", time: "Now" },
-      { id: 2, title: "AI plan ready", body: "Open AI Planner to review your latest itinerary.", time: "5m" },
-      { id: 3, title: "Booking tip", body: "Flight prices are lower this evening.", time: "1h" },
-    ],
+  const formatTimeFromNow = (futureDate) => {
+    const now = new Date();
+    const ms = futureDate.getTime() - now.getTime();
+    if (ms <= 0) return "Now";
+    const mins = Math.round(ms / 60000);
+    if (mins < 60) return `${mins}m`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.round(hours / 24);
+    return `${days}d`;
+  };
+
+  const formatTripDateTime = (dateValue) =>
+    dateValue.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  const buildNotificationsFromTrips = useMemo(
+    () => (trips) => {
+      const now = new Date();
+      return trips
+        .filter((trip) => ["planned", "booked"].includes(trip.status))
+        .map((trip) => {
+          const firstFlight = (trip.flights || [])
+            .map((flight) => new Date(flight.departure_time))
+            .filter((dateValue) => !Number.isNaN(dateValue.getTime()))
+            .sort((a, b) => a.getTime() - b.getTime())[0];
+
+          const startDate = trip.start_date
+            ? new Date(`${trip.start_date}T09:00:00`)
+            : null;
+          const notifyAt = firstFlight || startDate;
+
+          if (!notifyAt || notifyAt.getTime() < now.getTime()) {
+            return null;
+          }
+
+          return {
+            id: trip.id,
+            title: notifyAt.getTime() - now.getTime() < 24 * 60 * 60 * 1000 ? "Trip today" : "Upcoming trip",
+            body: `${trip.destination} starts on ${formatTripDateTime(notifyAt)}`,
+            time: formatTimeFromNow(notifyAt),
+            notifyAt,
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.notifyAt.getTime() - b.notifyAt.getTime())
+        .slice(0, 6);
+    },
     []
   );
 
@@ -52,6 +102,41 @@ export default function Navbar() {
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadNotifications = async () => {
+      if (!user) {
+        setNotifications([]);
+        return;
+      }
+
+      setNotifLoading(true);
+      try {
+        const { data } = await api.get("/api/trips");
+        if (!cancelled) {
+          setNotifications(buildNotificationsFromTrips(data));
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setNotifications([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setNotifLoading(false);
+        }
+      }
+    };
+
+    loadNotifications();
+    const intervalId = setInterval(loadNotifications, 60000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
+  }, [user, buildNotificationsFromTrips]);
 
   return (
     <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
@@ -92,15 +177,21 @@ export default function Navbar() {
           {notifOpen && (
             <div className={styles.notifPanel}>
               <h4>Notifications</h4>
-              {user ? (
+              {user && notifLoading ? (
+                <p className={styles.notifEmpty}>Loading notifications...</p>
+              ) : user ? (
                 <div className={styles.notifList}>
-                  {notifications.map((item) => (
-                    <button key={item.id} className={styles.notifItem} onClick={() => navigate("/my-trips")}>
-                      <strong>{item.title}</strong>
-                      <span>{item.body}</span>
-                      <small>{item.time}</small>
-                    </button>
-                  ))}
+                  {notifications.length ? (
+                    notifications.map((item) => (
+                      <button key={item.id} className={styles.notifItem} onClick={() => navigate("/my-trips")}>
+                        <strong>{item.title}</strong>
+                        <span>{item.body}</span>
+                        <small>{item.time}</small>
+                      </button>
+                    ))
+                  ) : (
+                    <p className={styles.notifEmpty}>No upcoming trip reminders.</p>
+                  )}
                 </div>
               ) : (
                 <p className={styles.notifEmpty}>Sign in to view notifications.</p>

@@ -35,10 +35,46 @@
   white-space: pre-wrap;
 }
 
+.reviewList {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.reviewItem {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.reviewLabel {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.reviewValue {
+  color: var(--text-primary);
+}
+
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+}
+
+.fieldWithHint {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldHint {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .checkbox {

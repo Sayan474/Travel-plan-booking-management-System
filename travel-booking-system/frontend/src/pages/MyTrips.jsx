@@ -8,6 +8,13 @@ import api from "../services/api";
 import { resolveAvatarUrl } from "../utils/avatar";
 import styles from "./MyTrips.module.css";
 
+const formatINR = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+
 export default function MyTrips() {
   const { user } = useAuth();
   const [trips, setTrips] = useState([]);
@@ -56,7 +63,7 @@ export default function MyTrips() {
     return [
       { label: "Total Trips", value: total },
       { label: "Upcoming", value: upcoming },
-      { label: "Spent This Year", value: `$${spent.toFixed(0)}` },
+      { label: "Spent This Year", value: formatINR(spent.toFixed(0)) },
       { label: "Miles Flown", value: total * 1800 },
     ];
   }, [trips]);
@@ -131,7 +138,16 @@ export default function MyTrips() {
             <input className="input" placeholder="Destination" value={form.destination} onChange={(e) => setForm({ ...form, destination: e.target.value })} />
             <input className="input" type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} />
             <input className="input" type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} />
-            <input className="input" type="number" placeholder="Budget" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} />
+            <input
+              className="input"
+              type="number"
+              min="0"
+              step="1"
+              inputMode="numeric"
+              placeholder="Budget"
+              value={form.budget}
+              onChange={(e) => setForm({ ...form, budget: e.target.value.replace(/[^\d]/g, "") })}
+            />
             <button className="btn btn-primary" type="submit">Save Trip</button>
           </form>
         </div>
